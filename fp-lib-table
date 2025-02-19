@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "hlord2000-Package_DFN_QFN")(type "KiCad")(uri "/home/hlord/Documents/hlord2000-kicad-libraries/footprints/hlord2000-Package_DFN_QFN.pretty")(options "")(descr ""))
+)
