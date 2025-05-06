@@ -1,18 +1,31 @@
-Everyone knows the nRF52840 dongle! It's an excellent way to prototype with BLE, USB or Nordic's proprietary protocols ("Enhanced ShockBurst", "Gazelle"). As solid as the dongle is, it's time (with the new nRF54L15) to add new features and creature comforts to the foundation it gave us. 
+# Hardware Design with the nRF54L15 is Easy: Making an nRF54L15 Dongle in KiCad
 
-How do you perfect perfection? What does an nRF54L15 dongle look like? Here are some things to consider:
-- The nRF54L15 does not have USB. We need some sort of interface chip between the L15 and the computer. I propose that we use an nRF52833 to act as a UART bridge and add some extra functionality...
-- The nRF54L15 has a 4mpbs PHY! Assuming we get throughput around 2.5-3.5mbps, we've already saturated the maximum data rate of the nRF52833's UART. Let's try using SPI between the two chips.
-- As with the Thingy91 X, it is possible to create a CMSIS-DAP debugger with the nRF52833. I'll connect the SWDCLK/SWDIO/RESET from the nRF54L15 to the nRF52833.
+TODO: add flash part, explain firmware bringup on board, get some made 
+
+Everyone knows the nRF52840 dongle! It's an excellent way to prototype with BLE, USB, or Nordic's proprietary protocols ("Enhanced ShockBurst", "Gazelle"). As solid as the dongle is, it's time to add new features and creature comforts to the foundation it gave us. 
+
+First, a short comparison of the nRF54L15 and the nRF52840. Why make the leap to the nRF54L15?
+- The nRF54L15 is based on a modern 22nm process, showing a 2x performance increase and half of the power consumption of the nRF52840.
+- The nRF54L15 has expanded non-volatile memory as compared to the nRF52840 with 1.5MB onboard (+512KB).
+- The nRF54L15 has a peripheral RISC-V core (cool!) which has a lot of interesting uses. It can be used as another core running Zephyr RTOS or as a software defined peripheral with libraries we provide!
+- A new 4mbps PHY is available (this supports proprietary protocols only at time of writing).
+- New security features are available in the nRF54L15 including a key management unit (KMU), TrustZone, side channel attack detection, and hardware tamper detectors.
+
+How do you perfect perfection? What does an nRF54L15 dongle look like? Any tradeoffs? Here are some things to consider:
+- The nRF54L15 does not have a USB interface. We need some sort of chip between the L15 and host device. I propose that we use an nRF52833 to act as a UART bridge and add some extra functionality...
+- As seen in the Thingy91 X, it is possible to create a CMSIS-DAP debugger with Zephyr! I'll connect the SWDCLK/SWDIO/RESET pins from the nRF54L15 to the nRF52833.
 - Let's add some quality of life items: a STEMMA-QT/Qwiic connector and through holes with castellations.
+- It is time for USB-C! We will use a USB-C plug so that it is a true dongle.
+- For DFU purposes, we will include a small external flash part connected to the nRF54L15.
+- We are not typically power limited with a dongle and do not need a connection to a battery. For more information on power consumption with the nRF54L15, check out the Online Power Profiler here: ##INCLUDE LINK##
 
-So we've defined our system. Let's make a diagram:
+We've defined our system, let's make a diagram:
 
 <p align="center">
   <img width="1280" height="auto" src="img/flowchart.png">
 </p>
 
-I personally use KiCAD for all hardware design I do. It's quite close to being an outright Altium replacement and the price (free) is hard to pass up. Check out my KiCAD library for Nordic parts https://github.com/hlord2000/nordic-lib-kicad if you are also interested!
+I personally use KiCad for all hardware design I do. It's quite close to being an outright Altium replacement and the price (free) is hard to pass up. Check out my KiCad library for Nordic parts https://github.com/hlord2000/nordic-lib-kicad if you are also interested!
 
 The nRF52833 can be powered directly from USB, but the nRF54L15 will need a 5V->3.3V regulator. Let's combine this with the USB-C plug and protection IC. 
 
